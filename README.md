@@ -1,3 +1,26 @@
+# Speed Safety Score v1
+--------------------------------------------------------------------------
+For SpeedSafetyScorev1, the author built a road safety causal analysis pipeline utilizing the DoWhy causal inference framework (employing Directed Acyclic Graphs and Backdoor Adjustment via Linear Regression) to isolate and estimate the causal impact of the 85th percentile speed on fatal accident rates using the ADB Thailand dataset. As a result, the model calculated normalized impact coefficients across different road classes and land uses—identifying primary/secondary urban and secondary rural segments as high-priority areas—and successfully categorized 11,544 road segments into a four-tier safety prioritization matrix exported to safety_score_1.geojson
+
+
+### 1. Model Results & Interpretation
+
+
+| Road Group | Model Coeff | Impact per 1km/h F85 reduction (%) | Priority |
+| :--- | :--- | :--- | :--- |
+| primary_URBAN | 0.11288 | 0.5484 | High |
+| primary_RURAL | -0.19929 | -0.7057 | Low |
+| secondary_URBAN | 0.06769 | 0.3206 | High |
+| secondary_RURAL | 0.15104 | 0.8031 | High |
+| motorway_URBAN | -0.13833 | -0.5874 | Low |
+| motorway_RURAL | 0.00000 | 0.0000 | Low |
+| trunk_URBAN | 0.05453 | 0.2722 | Medium |
+| trunk_RURAL | 0.02331 | 0.0931 | Medium |
+
+
+
+# Speed Safety Score v2
+--------------------------------------------------------------------------
 ## 1. Non-linear model to score safety risk of the roads in Thailand
 shem_nonlinear_branch folder contains a Jupyter notebook that performs non-linear model training.
 
@@ -25,3 +48,10 @@ Road segments are physically connected, meaning risk clusters along corridors ra
 To capture this corridor-level risk, **Model D+W** introduces a spatially lagged neighbour signal (`W_log_target`), representing the row-standardized mean of a segment's neighbours' log-transformed outcomes. This allows:
 1. **Prioritization**: High-risk corridor identification for known road networks.
 2. **Cold-Start Scoring**: Borrowing risk signal from connected, known roads to score new ("unmerged") road segments in Part 3.
+
+
+# Street View Analysis
+----------------------------------------------------------
+
+For street_view_analysis, the author developed a computer vision and safety scoring pipeline that matched 2024 accident points to road segments in the ADB Thailand dataset, sampled 1,000 segments with multiple accidents to fetch 2,000 Google Street View images, and analyzed them using YOLO-World object detection and Mask2Former scene segmentation. As a result, the pipeline computed per-segment Speed Safety Scores and generated an observational correlation bubble chart visualizing the relationships between operating speed, detected road objects, and accident rates.
+
